@@ -21,8 +21,10 @@ char keypad_array[NROWS][NCOLS] = {   // Keypad layout
     {'*', '0', '#', 'D'}
 };
 
+
+
 void initKeypad(void){
-    for (int i = 0; i <= 3; i++){
+    for (int i = 0; i <= NCOLS - 1; i++){
         int gpioColNum = col_pins[i];
         gpio_reset_pin(gpioColNum);
         gpio_set_direction(gpioColNum, GPIO_MODE_INPUT);
@@ -33,7 +35,7 @@ void initKeypad(void){
             gpio_pulldown_en(gpioColNum);
         }
     }
-    for (int i = 0; i <= 3; i++){
+    for (int i = 0; i <= NROWS - 1; i++){
         int gpioRowNum = row_pins[i];
         gpio_reset_pin(gpioRowNum);
         gpio_set_direction(gpioRowNum, GPIO_MODE_OUTPUT);
@@ -41,9 +43,9 @@ void initKeypad(void){
     }
 }
 char scanKeypad(void){
-    for(int i = 0; i <= 3; i++){
+    for(int i = 0; i <= NROWS -1; i++){
         gpio_set_level(row_pins[i], ACTIVE);
-        for (int j = 0; j <= 3; j++){
+        for (int j = 0; j <= NCOLS - 1; j++){
             if (gpio_get_level(col_pins[j]) == ACTIVE){
                 gpio_set_level(row_pins[i], !ACTIVE);
                 return keypad_array[i][j];
@@ -82,7 +84,7 @@ void app_main(void){
                         State = debounce;
                     }
                 }
-                if (timedOut ){
+                if (timedOut){
                     if (newKey != lastKey){
                         State = waitPress;
                     }
